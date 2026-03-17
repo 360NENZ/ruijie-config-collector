@@ -1,5 +1,5 @@
 # =============================================================================
-# Ruijie Switch Configuration Collector  —  config.yml
+# Ruijie Switch Configuration Collector — config.yml
 # =============================================================================
 # 复制此文件并根据实际环境修改。
 # Copy this file and edit it for your environment.
@@ -13,43 +13,38 @@
 #
 # 方式 1 — 直接提供 auth token（推荐）
 # Option 1 — Provide the raw auth token (recommended)
-#   在浏览器开发者工具中，打开 Network 标签，在登录时
-#   找到对 /login.do 的 POST 请求，复制 Form Data 中
-#   的 auth 字段值，粘贴到下方。
+#   在浏览器开发者工具中，打开 Network 标签，找到登录时
+#   对 /login.do 的 POST 请求，复制 Form Data 中的 auth 字段值。
 #
-#   In the browser DevTools → Network tab, capture the POST
-#   to /login.do and copy the "auth" form field value.
+#   In the browser DevTools → Network tab, capture the POST to /login.do
+#   and copy the "auth" form field value directly.
 #
-# 方式 2 — 提供用户名和密码（工具自动编码）
+# 方式 2 — 提供明文用户名和密码（工具自动编码）
 # Option 2 — Provide username and password (auto-encoded)
-#   工具会以锐捷 Web 管理界面的方式对凭据进行多轮
-#   Base64 编码（默认 9 轮）。
+#   工具会按照 base.dao.js / login.js 中 getPasswordEncode() 的逻辑，
+#   进行 5 轮"Base64 编码 + 前缀拼接"来生成 token。
 #
-#   The tool will apply Ruijie's multi-round Base64 encoding
-#   (default: 9 rounds) to generate the auth token.
+#   The tool applies Ruijie's getPasswordEncode() algorithm:
+#     5 rounds of: base64_encode(current) → prepend "aFhTRUpVVmxWYVYxWlZN"
 # -----------------------------------------------------------------------------
 auth:
-  # --- Option 1: raw token (takes precedence if set) ---
-  # token: "aFhTRUpVVmxWYVYxWlZNYUZo..."
+  # --- Option 1: raw token (takes precedence when set) ---
+  # token: "aFhTRUpVVmxWYVYxWlZN..."
 
-  # --- Option 2: username / password ---
+  # --- Option 2: plaintext credentials (auto-encoded at runtime) ---
   username: "admin"
-  password: "your_password_here"
-
-  # Number of Base64 encoding rounds (default: 9, matches most Ruijie firmware)
-  # 编码轮数（默认 9，与大多数锐捷固件一致）
-  # encoding_rounds: 9
+  password: "ruijie@123"
 
 
 # -----------------------------------------------------------------------------
 # 目标设备 / Targets
 # -----------------------------------------------------------------------------
-# 支持三种指定方式，可同时使用：
-# Three formats are supported and can be combined:
+# 支持三种格式，可同时混用。
+# Three formats are supported and can be combined freely.
 #
-#   ips      – explicit single IPs
-#   subnets  – CIDR notation  (all host addresses are scanned)
-#   ranges   – dash notation  (A.B.C.START-END)
+#   ips      – 单个 IP / explicit single IPs
+#   subnets  – CIDR 网段 / CIDR notation (all host addresses are scanned)
+#   ranges   – 末段范围  / dash notation  (A.B.C.START-END)
 # -----------------------------------------------------------------------------
 targets:
   # 单个 IP / Individual IPs
@@ -62,7 +57,7 @@ targets:
   #   - 172.31.99.0/24
   #   - 10.0.0.0/22
 
-  # IP 范围 / IP range (last-octet range)
+  # IP 范围 / IP range
   # ranges:
   #   - 172.31.99.1-254
   #   - 10.0.1.1-100
@@ -75,10 +70,10 @@ request:
   # Connection / read timeout in seconds  连接/读取超时（秒）
   timeout: 10
 
-  # Verify HTTPS certificates  是否校验 HTTPS 证书
-  # Set to false for switches with self-signed certificates.
+  # Verify HTTPS certificate  是否校验 HTTPS 证书
+  # Ruijie switches typically use self-signed certificates — keep false.
   # 交换机通常使用自签名证书，建议保持 false。
   verify_ssl: false
 
-  # Maximum concurrent connections  最大并发连接数
+  # Max concurrent threads  最大并发线程数
   concurrent: 5
