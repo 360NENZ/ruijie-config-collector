@@ -1,0 +1,41 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+venv/
+.venv/
+env/
+.env
+
+# =============================================================
+# 采集结果包含敏感配置，切勿提交到版本控制系统！
+# Collected output may contain sensitive configs — do NOT commit!
+# =============================================================
+maps.json
+configs/
+*.text
+
+# 本地配置副本（可能含有密码）
+# Local config overrides (may contain passwords)
+my-*.yml
+local-*.yml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
